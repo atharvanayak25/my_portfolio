@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atharva Nayak | Robotics Portfolio</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'monospace'], // Tech font
+                    },
+                    animation: {
+                        'spin-slow': 'spin-slow 15s linear infinite',
+                        'scan': 'scan 3s linear infinite',
+                        'pulse-slow': 'pulse-slow 3s ease-in-out infinite',
+                        'pulse-fast': 'pulse-fast 1s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        'spin-slow': { from: { transform: 'rotate(0deg)' }, to: { transform: 'rotate(360deg)' } },
+                        scan: { '0%': { top: '0%', opacity: 0 }, '50%': { opacity: 1 }, '100%': { top: '100%', opacity: 0 } },
+                        'pulse-slow': { '0%, 100%': { opacity: 1 }, '50%': { opacity: 0.5 } },
+                        'pulse-fast': { '0%, 100%': { opacity: 1 }, '50%': { opacity: 0.2 } },
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body { background-color: black; color: #cffafe; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; background: rgba(8, 145, 178, 0.1); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(34, 211, 238, 0.5); border-radius: 2px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(34, 211, 238, 0.8); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Typing effect cursor */
+        .typing-effect { border-right: 2px solid #22d3ee; animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { border-color: transparent; } }
+    </style>
+</head>
+<body class="font-mono min-h-screen overflow-x-hidden relative selection:bg-cyan-500/30 selection:text-white">
+
+    <div class="fixed inset-0 z-0 bg-black">
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-cyan-950/10 to-slate-950 z-0"></div>
+        <canvas id="particleCanvas" class="absolute inset-0 z-0 opacity-60"></canvas>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.6)_100%)] z-10 pointer-events-none"></div>
+    </div>
+
+    <div id="boot-screen" class="fixed inset-0 bg-black z-[100] flex flex-col items-center justify-center font-mono text-cyan-400 p-8">
+        <div class="w-64 h-64 border-4 border-cyan-500/30 rounded-full flex items-center justify-center relative animate-pulse mb-8">
+            <div class="w-48 h-48 border-2 border-cyan-400/50 rounded-full flex items-center justify-center border-dashed animate-spin-slow">
+               <div class="w-32 h-32 border border-cyan-300 rounded-full animate-ping opacity-20"></div>
+            </div>
+        </div>
+        <div id="boot-text-container" class="w-full max-w-lg text-center">
+            </div>
+    </div>
+
+    <div id="main-app" class="relative z-10 hidden opacity-0 transition-opacity duration-1000">
+
+        <nav class="fixed top-8 left-1/2 -translate-x-1/2 w-[90%] max-w-6xl z-40 border border-cyan-500/30 bg-black/80 backdrop-blur-md rounded-full px-6 py-3 shadow-[0_0_20px_rgba(34,211,238,0.1)] flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <i data-lucide="aperture" class="text-cyan-400 animate-spin-slow w-6 h-6"></i>
+                <div class="flex flex-col">
+                    <span class="font-bold text-cyan-400 tracking-[0.2em] text-sm drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]">ATHARVA.SYS</span>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center gap-8 text-xs tracking-widest text-cyan-500">
+                <a href="#about" class="hover:text-white hover:drop-shadow-[0_0_10px_rgba(34,211,238,0.8)] transition-all">DATA</a>
+                <a href="#projects" class="hover:text-white hover:drop-shadow-[0_0_10px_rgba(34,211,238,0.8)] transition-all">PROJECTS</a>
+                <a href="#experience" class="hover:text-white hover:drop-shadow-[0_0_10px_rgba(34,211,238,0.8)] transition-all">LOGS</a>
+            </div>
+            <div class="flex gap-3 text-cyan-600 border-l border-cyan-800 pl-4">
+                <i data-lucide="wifi" class="animate-pulse w-4 h-4"></i>
+                <i data-lucide="battery" class="w-4 h-4"></i>
+            </div>
+        </nav>
+
+        <section class="min-h-screen flex items-center justify-center pt-32 pb-20 relative z-10 px-4">
+            <div class="max-w-7xl w-full grid md:grid-cols-2 gap-12 items-center">
+                
+                <div class="order-2 md:order-1 relative">
+                    <div class="absolute -left-8 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-cyan-500/50 to-transparent"></div>
+                    <div class="flex items-center gap-2 mb-4 text-cyan-500 text-xs tracking-widest animate-pulse">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        <span>SYSTEM SECURE</span>
+                        <span class="w-px h-3 bg-cyan-800 mx-2"></span>
+                        <span>MARK IX INTERFACE</span>
+                    </div>
+                    
+                    <h1 class="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-cyan-300 mb-6 tracking-tight drop-shadow-[0_0_15px_rgba(34,211,238,0.6)]">
+                        ATHARVA NAYAK
+                    </h1>
+                    
+                    <div class="inline-block border-l-4 border-cyan-500 bg-cyan-900/20 px-6 py-2 mb-8 backdrop-blur-md">
+                        <p class="text-cyan-300 tracking-widest text-sm typing-effect">
+                            M.S. ROBOTICS | PROTOCOL: GRAD_STUDENT
+                        </p>
+                    </div>
+
+                    <p class="text-cyan-100/80 mb-8 max-w-lg leading-relaxed text-sm border-l border-cyan-900 pl-4 shadow-black drop-shadow-sm">
+                        SPECIALIZING IN SLAM, PATH PLANNING, AND EMBEDDED SYSTEMS.
+                    </p>
+
+                    <div class="flex gap-4">
+                        <a href="public/assets/AtharvaNayak_Resume_111025.pdf" target="_blank" class="px-8 py-3 bg-cyan-500/10 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/50 tracking-widest text-xs transition-all uppercase flex items-center gap-2 group shadow-[0_0_15px_rgba(34,211,238,0.2)] hover:shadow-[0_0_25px_rgba(34,211,238,0.4)]">
+                            <i data-lucide="file-text" class="w-4 h-4 group-hover:text-yellow-300 transition-colors"></i>
+                            Resume
+                        </a>
+                        <a href="https://github.com/atharvanayak25" target="_blank" class="px-8 py-3 bg-transparent hover:bg-cyan-900/20 text-slate-400 hover:text-cyan-300 border border-slate-700 hover:border-cyan-500/50 tracking-widest text-xs transition-all uppercase flex items-center gap-2">
+                            <i data-lucide="github" class="w-4 h-4"></i>
+                            Github
+                        </a>
+                    </div>
+                </div>
+
+                <div class="order-1 md:order-2 flex justify-center relative">
+                    <div class="relative w-80 h-96 flex flex-col items-center justify-center select-none">
+                        <div class="relative w-full h-full border border-cyan-500/30 bg-cyan-950/20 backdrop-blur-sm p-2 group overflow-hidden">
+                            <div class="absolute -top-1 -left-1 w-8 h-8 border-t-2 border-l-2 border-cyan-400"></div>
+                            <div class="absolute -top-1 -right-1 w-8 h-8 border-t-2 border-r-2 border-cyan-400"></div>
+                            <div class="absolute -bottom-1 -left-1 w-8 h-8 border-b-2 border-l-2 border-cyan-400"></div>
+                            <div class="absolute -bottom-1 -right-1 w-8 h-8 border-b-2 border-r-2 border-cyan-400"></div>
+                            
+                            <div class="absolute top-4 left-4 right-4 flex justify-between items-center text-[10px] text-cyan-400 z-20">
+                                <div class="flex items-center gap-2"><i data-lucide="scan" class="w-4 h-4"></i> <span>VIDEO NO. 2543</span></div>
+                                <div class="flex flex-col items-end"><span>REC</span><span class="text-cyan-600">1080p // 60FPS</span></div>
+                            </div>
+
+                            <div class="absolute inset-4 border border-cyan-500/20 rounded-sm overflow-hidden">
+                                <img src="public/assets/profile_photo.jpeg" alt="Profile" class="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105">
+                                <div class="absolute top-[20%] left-[25%] w-[50%] h-[40%] border border-cyan-400/40 rounded-lg animate-pulse-slow"></div>
+                                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagmonds-light.png')] opacity-10 mix-blend-overlay"></div>
+                            </div>
+                            
+                            <div class="absolute top-0 left-0 w-full h-1 bg-cyan-400/30 animate-scan z-10"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="py-20 relative z-10">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex items-center gap-4 mb-12">
+                    <i data-lucide="target" class="text-cyan-500 animate-spin-slow w-5 h-5"></i>
+                    <div class="flex flex-col">
+                        <h2 class="text-2xl text-cyan-300 tracking-[0.2em] uppercase shadow-cyan-500/50 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]">Bio-Data</h2>
+                        <span class="text-[10px] text-cyan-600 tracking-widest uppercase">Subject Profile</span>
+                    </div>
+                    <div class="h-px flex-grow bg-gradient-to-r from-cyan-500/50 to-transparent"></div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="md:col-span-2">
+                        <div class="relative group bg-slate-900/20 border border-cyan-500/30 p-6 backdrop-blur-sm hover:bg-cyan-900/40 transition-all hover:shadow-[0_0_30px_rgba(34,211,238,0.2)]">
+                            <div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-500"></div>
+                            <div class="absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-500"></div>
+                            <div class="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-500"></div>
+                            <div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-500"></div>
+                            <h3 class="text-cyan-400 tracking-widest text-sm font-bold mb-4">SUMMARY</h3>
+                            <p class="text-cyan-100/80 text-sm leading-7 tracking-wide text-justify">
+                                M.S. ROBOTICS STUDENT AT NORTHEASTERN UNIVERSITY SPECIALIZING IN SLAM, SENSOR FUSION, AND AUTONOMOUS SYSTEMS. I ENGINEER ROBUST REAL-TIME PERCEPTION PIPELINES AND DEPLOY THEM ON COMPLEX HARDWARE, RANGING FROM THE BOSTON DYNAMICS SPOT TO CUSTOM EMBEDDED CONTROLLERS.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="relative group bg-slate-900/20 border border-cyan-500/30 p-6 backdrop-blur-sm hover:bg-cyan-900/40 transition-all hover:shadow-[0_0_30px_rgba(34,211,238,0.2)]">
+                        <div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-500"></div>
+                        <div class="absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-500"></div>
+                        <div class="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-500"></div>
+                        <div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-500"></div>
+                        <h3 class="text-cyan-400 tracking-widest text-sm font-bold mb-4">STATS</h3>
+                        
+                        <div class="space-y-4 text-xs">
+                            <div class="flex justify-between border-b border-cyan-900/50 pb-2"><span class="text-slate-500">DEGREE</span> <span class="text-cyan-400">MASTERS (M.S.)</span></div>
+                            <div class="flex justify-between border-b border-cyan-900/50 pb-2"><span class="text-slate-500">MAJOR</span> <span class="text-cyan-400">ROBOTICS</span></div>
+                            <div class="flex justify-between border-b border-cyan-900/50 pb-2"><span class="text-slate-500">LOCATION</span> <span class="text-cyan-400">BOSTON, MA</span></div>
+                            <div class="pt-2">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-cyan-700">CONTACT</span>
+                                    <div class="flex items-center gap-2"><div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div><span class="text-green-400 text-[10px]">OPEN TO WORK</span></div>
+                                </div>
+                                <div class="mt-2 text-cyan-400 text-xs tracking-wider border border-cyan-500/30 bg-cyan-900/20 p-2 text-center rounded">nayak.at@northeastern.edu</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="py-20 relative z-10">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex items-center gap-4 mb-12">
+                    <i data-lucide="cpu" class="text-cyan-500 animate-spin-slow w-5 h-5"></i>
+                    <div class="flex flex-col">
+                        <h2 class="text-2xl text-cyan-300 tracking-[0.2em] uppercase">Technical Skills</h2>
+                        <span class="text-[10px] text-cyan-600 tracking-widest uppercase">Capabilities</span>
+                    </div>
+                    <div class="h-px flex-grow bg-gradient-to-r from-cyan-500/50 to-transparent"></div>
+                </div>
+                <div id="skills-container" class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-20 relative z-10">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex items-center gap-4 mb-12">
+                    <i data-lucide="crosshair" class="text-cyan-500 animate-spin-slow w-5 h-5"></i>
+                    <div class="flex flex-col">
+                        <h2 class="text-2xl text-cyan-300 tracking-[0.2em] uppercase">Projects</h2>
+                        <span class="text-[10px] text-cyan-600 tracking-widest uppercase">Operational History</span>
+                    </div>
+                    <div class="h-px flex-grow bg-gradient-to-r from-cyan-500/50 to-transparent"></div>
+                </div>
+
+                <div class="relative group">
+                    <button onclick="scrollCarousel('left')" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-20 bg-black/50 border border-cyan-500/50 p-2 rounded-full text-cyan-400 opacity-0 group-hover:opacity-100 transition-all hover:bg-cyan-900/50 hover:scale-110">
+                        <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                    </button>
+                    <button onclick="scrollCarousel('right')" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-20 bg-black/50 border border-cyan-500/50 p-2 rounded-full text-cyan-400 opacity-0 group-hover:opacity-100 transition-all hover:bg-cyan-900/50 hover:scale-110">
+                        <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                    </button>
+
+                    <div id="projects-carousel" class="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-8 px-4 hide-scrollbar scroll-smooth">
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience" class="py-20 relative z-10">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex items-center gap-4 mb-12">
+                    <i data-lucide="activity" class="text-cyan-500 animate-spin-slow w-5 h-5"></i>
+                    <div class="flex flex-col">
+                        <h2 class="text-2xl text-cyan-300 tracking-[0.2em] uppercase">Work Experience</h2>
+                        <span class="text-[10px] text-cyan-600 tracking-widest uppercase">Engagements</span>
+                    </div>
+                    <div class="h-px flex-grow bg-gradient-to-r from-cyan-500/50 to-transparent"></div>
+                </div>
+                <div id="experience-container" class="grid md:grid-cols-2 gap-8">
+                    </div>
+            </div>
+        </section>
+
+        <footer class="py-12 border-t border-cyan-900 bg-black/80 backdrop-blur-md relative z-10">
+            <div class="max-w-6xl mx-auto px-4 text-center">
+                <div class="flex justify-center gap-8 mb-8">
+                    <a href="mailto:nayak.at@northeastern.edu" class="text-cyan-700 hover:text-cyan-400 transition-colors"><i data-lucide="mail" class="w-5 h-5"></i></a>
+                    <a href="https://linkedin.com/in/nayakatharva25" class="text-cyan-700 hover:text-cyan-400 transition-colors"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+                    <a href="https://github.com/atharvanayak25" class="text-cyan-700 hover:text-cyan-400 transition-colors"><i data-lucide="github" class="w-5 h-5"></i></a>
+                </div>
+                <p class="text-cyan-900 font-mono text-xs tracking-[0.3em]">ATHARVA NAYAK © 2025</p>
+            </div>
+        </footer>
+
+    </div> <div id="holo-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeModal()"></div>
+        <div class="relative w-full max-w-2xl bg-black/90 border-2 border-cyan-500/50 p-1 shadow-[0_0_50px_rgba(34,211,238,0.2)] overflow-hidden animate-[pulse-fast_0.2s_ease-out]">
+            <div class="absolute inset-0 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+            
+            <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-cyan-400 z-10"></div>
+            <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-cyan-400 z-10"></div>
+            <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-cyan-400 z-10"></div>
+            <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-cyan-400 z-10"></div>
+
+            <div class="relative z-10 p-6 md:p-8 flex flex-col h-full max-h-[90vh]">
+                <div class="flex justify-between items-start mb-6 border-b-2 border-cyan-500/30 pb-4">
+                    <div>
+                        <div class="flex items-center gap-2 text-cyan-400 text-xs tracking-widest mb-1">
+                            <i data-lucide="shield-check" class="w-4 h-4"></i>
+                            <span id="modal-type">SECURE FILE ACCESS</span>
+                        </div>
+                        <h2 id="modal-title" class="text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-white uppercase drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">TITLE</h2>
+                        <div id="modal-subtitle" class="text-cyan-600 text-xs mt-1"></div>
+                    </div>
+                    <button onclick="closeModal()" class="text-cyan-500 hover:text-white hover:rotate-90 transition-all duration-300">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+
+                <div id="modal-body" class="flex-grow overflow-y-auto pr-2 custom-scrollbar">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. DATA CONFIGURATION ---
+        const DATA = {
+            skills: [
+                { category: "LANGUAGES", items: ["PYTHON", "C++", "C", "MATLAB", "VERILOG", "CUDA", "BASH"] },
+                { category: "ROBOTICS & AI", items: ["ROS", "ROS 2", "GAZEBO", "ISAAC SIM", "OPENCV", "PYTORCH", "TENSORFLOW", "NUMPY", "SCIPY", "MOVEIT", "NAV2"] },
+                { category: "EMBEDDED & HARDWARE", items: ["RASPBERRY PI", "JETSON NANO", "FPGA (SPARTAN-6)", "VIVADO", "ARDUINO", "I2C / SPI / UART", "TCP/IP"] },
+                { category: "TOOLS & PLATFORMS", items: ["LINUX", "GIT", "DOCKER", "SOLIDWORKS", "RVIZ", "CMAKE", "SIMULINK"] }
+            ],
+            projects: [
+                {
+                    id: 1, category: "project", title: "OUTPUT SAMPLED MPPI", type: "SYSTEM: CONTROL",
+                    description: "STANDARD MODEL PREDICTIVE CONTROL METHODS OFTEN SUFFER FROM HIGH COMPUTATIONAL COSTS. THIS PROJECT ADDRESSED THE LATENCY BOTTLENECK IN AUTONOMOUS VEHICLE NAVIGATION.",
+                    details: "I engineered an optimized Model Predictive Path Integral (o-MPPI) controller that leverages inverse dynamics modeling to drastically reduce sampling complexity. Achieved 12x reduction in computation time (98ms to 8ms). Validated in Gazebo and on TurtleBot 3.",
+                    stack: ["ROS 2", "PYTHON", "GAZEBO", "CONTROL THEORY"], image: "/public/assets/MPPI_Img.png", github: "https://github.com/atharvanayak25", demo: "#"
+                },
+                {
+                    id: 2, category: "project", title: "POINT-LIO SLAM", type: "SYSTEM: PERCEPTION",
+                    description: "TRADITIONAL LIDAR SLAM METHODS STRUGGLE WITH HIGH-SPEED MOTION. THIS PROJECT AIMED TO DEPLOY ROBUST STATE ESTIMATION ON LEGGED ROBOTS.",
+                    details: "Integrated Point-LIO on Boston Dynamics Spot. Tightly couples IMU and LiDAR using EKF. Processed 10,000+ points/frame at 10Hz. Maintained sub-2cm accuracy at 75 rad/s.",
+                    stack: ["LIDAR", "IMU", "EKF", "C++"], image: "public/assets/Point-LIO_img.jpg", github: "https://github.com/atharvanayak25", demo: "#"
+                },
+                {
+                    id: 3, category: "project", title: "FIREARM DETECTION", type: "SYSTEM: VISION",
+                    description: "REAL-TIME THREAT DETECTION SYSTEM TO REDUCE RESPONSE TIMES IN CRITICAL SECURITY SCENARIOS.",
+                    details: "Fine-tuned YOLOv8 on 2,376 images (87% mAP). Optimized with TensorRT on Jetson Nano (15+ FPS). Integrated Twilio API for SMS/Voice alerts with context frames.",
+                    stack: ["YOLOV8", "TWILIO", "PYTORCH", "CV"], image: "public/assets/CV_img.png", github: "https://github.com/atharvanayak25", demo: "#"
+                },
+                {
+                    id: 4, category: "project", title: "AUTONOMOUS DRONE RACING", type: "SYSTEM: PLANNING",
+                    description: "GENERATING SMOOTH, DYNAMICALLY FEASIBLE FLIGHT PATHS THROUGH COMPLEX OBSTACLE COURSES.",
+                    details: "Hierarchical planning: 3D RRT for topology, Direct Transcription (SciPy SLSQP) for optimization. Reduced path length by 68.6% compared to raw RRT.",
+                    stack: ["PYTHON", "SCIPY", "GTSAM", "NUMPY"], image: "public/assets/Drone_img.png", github: "https://github.com/atharvanayak25", demo: "#"
+                },
+                {
+                    id: 5, category: "project", title: "MULTI-SENSOR DEAD RECKONING", type: "SYSTEM: NAVIGATION",
+                    description: "ROBUST LOCALIZATION IN GPS-DENIED ENVIRONMENTS USING DEAD-RECKONING.",
+                    details: "Fusion framework for GPS/IMU at 100Hz. Implemented adaptive low-pass filtering and Zero-Velocity Updates (ZUPT). Reduced heading drift by 60%.",
+                    stack: ["PYTHON", "C++", "ROS 2", "SENSOR FUSION"], image: "public/assets/DR_img.png", github: "https://github.com/atharvanayak25", demo: "#"
+                }
+            ],
+            experience: [
+                {
+                    id: 101, category: "experience", title: "RESEARCH INTERN", company: "VIVEKANAND EDUCATION SOCIETY", period: "JUN 2023 - DEC 2023", location: "MUMBAI, INDIA",
+                    description: "ESC DEVELOPMENT ON FPGA ARCHITECTURE FOR DRONE PROPULSION.",
+                    details: "Implemented 8-bit, 25kHz PWM generator in Verilog. Coupled with MicroBlaze soft processor (4,500 LUTs). Validated with 12V BLDC motors.",
+                    stack: ["VERILOG", "FPGA", "PCB DESIGN", "XILINX"], image: "public/assets/vesit_logo.png"
+                },
+                {
+                    id: 102, category: "experience", title: "FPGA RESEARCH INTERN", company: "TATA INSTITUTE OF FUNDAMENTAL RESEARCH", period: "SEP 2022 - APR 2023", location: "MUMBAI, INDIA",
+                    description: "HIGH-SPEED COMMUNICATION INTERFACE BETWEEN FPGA AND WIFI MODULE.",
+                    details: "Engineered 8-bit SPI protocol at 100 MHz. Achieved 35% throughput improvement. Developed embedded web server on WizFi360 for remote bitstream config.",
+                    stack: ["SPI", "EMBEDDED C", "WIFI", "IOT"], image: "public/assets/tifr_logo.png"
+                }
+            ]
+        };
+
+        // --- 2. DYNAMIC CONTENT GENERATION ---
+
+        function renderSkills() {
+            const container = document.getElementById('skills-container');
+            DATA.skills.forEach((group, idx) => {
+                const html = `
+                <div class="relative group bg-slate-900/20 border border-cyan-500/30 p-6 backdrop-blur-sm hover:bg-cyan-900/40 transition-all hover:shadow-[0_0_30px_rgba(34,211,238,0.2)]">
+                    <div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-500"></div>
+                    <div class="absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-500"></div>
+                    <div class="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-500"></div>
+                    <div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-500"></div>
+                    <div class="flex justify-between items-start mb-4 border-b border-cyan-900/50 pb-2">
+                        <h3 class="text-cyan-400 font-mono tracking-widest text-sm font-bold">${group.category}</h3>
+                        <span class="text-[10px] text-cyan-700 uppercase">MOD_${idx + 1}</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        ${group.items.map(item => `<span class="px-2 py-1 bg-cyan-900/40 text-cyan-300 text-[10px] border border-cyan-500/30 tracking-wider hover:bg-cyan-500/20 transition-colors cursor-crosshair">${item}</span>`).join('')}
+                    </div>
+                </div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        function createCardHTML(item) {
+            return `
+            <div onclick='openModal(${JSON.stringify(item).replace(/'/g, "&#39;")})' 
+                 class="group relative border border-cyan-500/30 bg-black/40 backdrop-blur-sm overflow-hidden cursor-pointer hover:border-cyan-400 transition-all duration-300 hover:shadow-[0_0_20px_rgba(34,211,238,0.2)] flex flex-col h-full">
+                <div class="h-48 relative overflow-hidden flex-shrink-0 border-b border-cyan-500/20">
+                    <div class="absolute inset-0 bg-cyan-900/20 mix-blend-overlay z-10"></div>
+                    <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 opacity-70 group-hover:opacity-100 group-hover:scale-110">
+                    <div class="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <i data-lucide="crosshair" class="text-cyan-400 w-12 h-12 animate-[spin_4s_linear_infinite]"></i>
+                    </div>
+                </div>
+                <div class="p-6 relative flex flex-col flex-grow">
+                    <h3 class="text-lg font-bold text-cyan-100 mb-2 uppercase tracking-wider group-hover:text-cyan-400 transition-colors line-clamp-2">${item.title}</h3>
+                    ${item.company ? `<div class="text-[10px] text-cyan-600 mb-2 uppercase tracking-wide line-clamp-1">${item.company}</div>` : ''}
+                    <div class="text-[10px] text-cyan-500 mb-4">${item.type || 'MODULE'}</div>
+                    <p class="text-slate-400 text-xs mb-4 leading-relaxed border-l-2 border-cyan-900 pl-3 group-hover:border-cyan-400 transition-colors line-clamp-3 flex-grow">${item.description}</p>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        ${item.stack.slice(0, 3).map(t => `<span class="text-[10px] text-cyan-400 bg-cyan-950/50 px-1 border border-cyan-900">${t}</span>`).join('')}
+                    </div>
+                    <div class="inline-flex items-center gap-2 text-xs text-cyan-600 group-hover:text-cyan-300 transition-colors uppercase tracking-widest mt-auto">
+                        <i data-lucide="maximize-2" class="w-3 h-3"></i> Expand Data
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderProjects() {
+            const container = document.getElementById('projects-carousel');
+            DATA.projects.forEach(p => {
+                const wrapper = document.createElement('div');
+                wrapper.className = "min-w-[300px] md:min-w-[380px] snap-center h-full";
+                wrapper.innerHTML = createCardHTML(p);
+                container.appendChild(wrapper);
+            });
+        }
+
+        function renderExperience() {
+            const container = document.getElementById('experience-container');
+            DATA.experience.forEach(e => {
+                const wrapper = document.createElement('div');
+                wrapper.className = "h-full";
+                wrapper.innerHTML = createCardHTML(e);
+                container.appendChild(wrapper);
+            });
+        }
+
+        // --- 3. CANVAS BACKGROUND ---
+        function initCanvas() {
+            const canvas = document.getElementById('particleCanvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            
+            const resize = () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            };
+            window.addEventListener('resize', resize);
+            resize();
+
+            const particles = [];
+            const particleCount = 80;
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.baseX = Math.random() * width;
+                    this.baseY = Math.random() * height;
+                    this.size = Math.random() * 1.5 + 0.5;
+                    this.offset = Math.random() * 100;
+                }
+                update(scrollY) {
+                    const scrollPercent = Math.min(scrollY / (window.innerHeight * 2), 1);
+                    const chaosX = this.x + Math.sin(Date.now() * 0.001 + this.offset) * 2;
+                    const chaosY = this.y + Math.cos(Date.now() * 0.001 + this.offset) * 2;
+                    const gridX = Math.round(this.baseX / 50) * 50;
+                    const gridY = Math.round(this.baseY / 50) * 50;
+                    this.x = chaosX * (1 - scrollPercent) + gridX * scrollPercent;
+                    this.y = chaosY * (1 - scrollPercent) + gridY * scrollPercent;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(34, 211, 238, 0.6)';
+                    ctx.fill();
+                }
+            }
+
+            for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                const scrollY = window.scrollY;
+                particles.forEach(p => {
+                    p.update(scrollY);
+                    p.draw();
+                });
+                // Connections
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx*dx + dy*dy);
+                        if (dist < 150) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(34, 211, 238, ${0.2 * (1 - dist/150)})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // --- 4. BOOT SEQUENCE ---
+        function runBootSequence() {
+            const bootText = ["BOOT SEQUENCE INITIATED...", "LOADING ATHARVA.SYS KERNEL...", "RETRIEVING PROFILE DATA...", "BIOMETRICS VERIFIED...", "WELCOME, SIR."];
+            const container = document.getElementById('boot-text-container');
+            let delay = 0;
+
+            bootText.forEach((text, index) => {
+                delay += Math.random() * 400 + 300;
+                setTimeout(() => {
+                    const div = document.createElement('div');
+                    div.className = "mb-2 text-sm tracking-[0.2em] uppercase text-cyan-300 drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]";
+                    div.innerText = text;
+                    container.appendChild(div);
+
+                    if (index === bootText.length - 1) {
+                        setTimeout(() => {
+                            document.getElementById('boot-screen').style.display = 'none';
+                            const app = document.getElementById('main-app');
+                            app.style.display = 'block';
+                            // Trigger reflow
+                            void app.offsetWidth;
+                            app.style.opacity = '1';
+                        }, 1200);
+                    }
+                }, delay);
+            });
+        }
+
+        // --- 5. INTERACTION LOGIC ---
+        function scrollCarousel(dir) {
+            const c = document.getElementById('projects-carousel');
+            const amount = dir === 'left' ? -320 : 320;
+            c.scrollBy({ left: amount, behavior: 'smooth' });
+        }
+
+        function openModal(item) {
+            const modal = document.getElementById('holo-modal');
+            const isExp = item.category === 'experience';
+            
+            document.getElementById('modal-title').innerText = item.title;
+            document.getElementById('modal-type').innerText = isExp ? "PERSONNEL RECORD" : "SECURE FILE ACCESS";
+            document.getElementById('modal-subtitle').innerText = isExp ? `${item.company} // ${item.location}` : "";
+            
+            const body = document.getElementById('modal-body');
+            body.innerHTML = `
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="relative h-48 border-2 border-cyan-500/30 rounded overflow-hidden group">
+                         <img src="${item.image}" class="w-full h-full object-cover opacity-80" />
+                         <div class="absolute inset-0 bg-cyan-500/10 mix-blend-overlay"></div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="text-cyan-400 text-xs uppercase tracking-widest mb-2 border-l-4 border-cyan-500 pl-2">
+                                ${isExp ? "Role Overview" : "Problem Statement"}
+                            </h3>
+                            <p class="text-cyan-100/80 leading-relaxed">${item.description}</p>
+                        </div>
+                        <div>
+                             <h3 class="text-cyan-400 text-xs uppercase tracking-widest mb-2 border-l-4 border-cyan-500 pl-2">Tech Stack</h3>
+                             <div class="flex flex-wrap gap-2">
+                                ${item.stack.map(s => `<span class="bg-cyan-950/80 text-cyan-300 px-2 py-1 text-[10px] border border-cyan-500/50">${s}</span>`).join('')}
+                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-cyan-900/20 border border-cyan-500/30 p-4 rounded backdrop-blur-sm mt-6">
+                     <h3 class="text-cyan-400 text-xs uppercase tracking-widest mb-2 flex items-center gap-2">
+                        <i data-lucide="maximize-2" class="w-3 h-3"></i> ${isExp ? "Operational Details" : "Technical Details"}
+                     </h3>
+                     <p class="text-cyan-100/70 leading-relaxed text-justify">${item.details}</p>
+                </div>
+                ${!isExp ? `
+                <div class="mt-8 flex gap-4 pt-4 border-t border-cyan-500/30">
+                    <a href="${item.github}" target="_blank" class="flex-1 bg-cyan-600/20 hover:bg-cyan-500/30 text-cyan-400 border border-cyan-500/50 py-3 flex items-center justify-center gap-2 font-mono text-xs tracking-widest uppercase transition-all">Initialize Code</a>
+                </div>` : 
+                `<div class="mt-8 pt-4 border-t border-cyan-500/30 text-right">
+                    <div class="inline-block px-4 py-2 bg-cyan-900/20 border border-cyan-500/30 text-cyan-400 font-mono text-xs tracking-widest">TIMEFRAME: ${item.period}</div>
+                </div>`}
+            `;
+            
+            modal.classList.remove('hidden');
+            lucide.createIcons(); // Re-scan for new icons in modal
+        }
+
+        function closeModal() {
+            document.getElementById('holo-modal').classList.add('hidden');
+        }
+
+        // --- INIT ---
+        window.addEventListener('DOMContentLoaded', () => {
+            renderSkills();
+            renderProjects();
+            renderExperience();
+            initCanvas();
+            lucide.createIcons();
+            runBootSequence();
+        });
+    </script>
+</body>
+</html>
