@@ -308,46 +308,46 @@
             projects: [
                 {
                     id: 1, category: "project", title: "OUTPUT SAMPLED MPPI", type: "SYSTEM: CONTROL",
-                    description: "STANDARD MODEL PREDICTIVE CONTROL METHODS OFTEN SUFFER FROM HIGH COMPUTATIONAL COSTS. THIS PROJECT ADDRESSED THE LATENCY BOTTLENECK IN AUTONOMOUS VEHICLE NAVIGATION.",
-                    details: "I engineered an optimized Model Predictive Path Integral (o-MPPI) controller that leverages inverse dynamics modeling to drastically reduce sampling complexity. Achieved 12x reduction in computation time (98ms to 8ms). Validated in Gazebo and on TurtleBot 3.",
+                    description: "STANDARD MODEL PREDICTIVE CONTROL METHODS OFTEN SUFFER FROM HIGH COMPUTATIONAL COSTS, LIMITING REAL-TIME PERFORMANCE ON EMBEDDED ROBOTICS HARDWARE. THIS PROJECT ADDRESSED THE LATENCY BOTTLENECK IN AUTONOMOUS VEHICLE NAVIGATION.",
+                    details: "I engineered an optimized Model Predictive Path Integral (o-MPPI) controller that leverages inverse dynamics modeling and output-space sampling to drastically reduce sampling complexity. By shifting the sampling distribution to the output space, I achieved a 12x reduction in computation time (from 98ms to 8ms), enabling high-frequency real-time control. The algorithm was rigorously validated in Gazebo simulations and physically deployed on a TurtleBot 3, demonstrating stable path tracking across 15+ diverse track configurations under varying dynamic conditions.",
                     stack: ["ROS 2", "PYTHON", "GAZEBO", "CONTROL THEORY"], image: "public/assets/MPPI_Img.png", github: "https://github.com/atharvanayak25", demo: "#"
                 },
                 {
                     id: 2, category: "project", title: "POINT-LIO SLAM", type: "SYSTEM: PERCEPTION",
-                    description: "TRADITIONAL LIDAR SLAM METHODS STRUGGLE WITH HIGH-SPEED MOTION. THIS PROJECT AIMED TO DEPLOY ROBUST STATE ESTIMATION ON LEGGED ROBOTS.",
-                    details: "Integrated Point-LIO on Boston Dynamics Spot. Tightly couples IMU and LiDAR using EKF. Processed 10,000+ points/frame at 10Hz. Maintained sub-2cm accuracy at 75 rad/s.",
+                    description: "TRADITIONAL LIDAR SLAM METHODS STRUGGLE WITH HIGH-SPEED MOTION AND FEATURE-POOR ENVIRONMENTS, OFTEN LEADING TO DRIFT OR TRACKING FAILURE. THIS PROJECT AIMED TO DEPLOY A ROBUST STATE ESTIMATION SYSTEM CAPABLE OF HANDLING AGGRESSIVE MANEUVERS ON LEGGED ROBOTS.",
+                    details: "I integrated the Point-LIO (LiDAR Inertial Odometry) framework onto a Boston Dynamics Spot robot to enable drift-free localization in challenging indoor environments. The system tightly couples high-frequency IMU data with LiDAR point clouds using an Extended Kalman Filter (EKF), allowing it to process 10,000+ points per frame at 10Hz. I benchmarked the system against LIO-SAM and FAST-LIO2, demonstrating superior performance in long corridor environments and maintaining sub-2cm accuracy during high-speed motion up to 75 rad/s.",
                     stack: ["LIDAR", "IMU", "EKF", "C++"], image: "public/assets/Point-LIO_img.jpg", github: "https://github.com/atharvanayak25", demo: "#"
                 },
                 {
                     id: 3, category: "project", title: "FIREARM DETECTION", type: "SYSTEM: VISION",
-                    description: "REAL-TIME THREAT DETECTION SYSTEM TO REDUCE RESPONSE TIMES IN CRITICAL SECURITY SCENARIOS.",
-                    details: "Fine-tuned YOLOv8 on 2,376 images (87% mAP). Optimized with TensorRT on Jetson Nano (15+ FPS). Integrated Twilio API for SMS/Voice alerts with context frames.",
+                    description: "ACTIVE SHOOTER INCIDENTS REQUIRE IMMEDIATE RESPONSE, YET HUMAN MONITORING OF SURVEILLANCE FEEDS IS PRONE TO FATIGUE AND DELAY. THIS PROJECT DEVELOPED AN AUTOMATED, REAL-TIME THREAT DETECTION SYSTEM TO REDUCE RESPONSE TIMES IN CRITICAL SECURITY SCENARIOS.",
+                    details: "I engineered a high-performance real-time object detection system by fine-tuning the YOLOv8 deep neural network on a dataset of 2,376 training images, achieving 87% mAP@0.5 with high precision (100%) and recall (92%). The model was optimized for edge deployment using TensorRT on a Jetson Nano, enabling inference at 15+ FPS on live video feeds. To ensure rapid incident response, I architected an automated alerting pipeline that integrates with the Twilio API to instantly send SMS and voice notifications with intelligent frame capture (pre/post-detection context) to security personnel within seconds of a threat being identified.",
                     stack: ["YOLOV8", "TWILIO", "PYTORCH", "CV"], image: "public/assets/CV_img.png", github: "https://github.com/atharvanayak25", demo: "#"
                 },
                 {
                     id: 4, category: "project", title: "AUTONOMOUS DRONE RACING", type: "SYSTEM: PLANNING",
-                    description: "GENERATING SMOOTH, DYNAMICALLY FEASIBLE FLIGHT PATHS THROUGH COMPLEX OBSTACLE COURSES.",
-                    details: "Hierarchical planning: 3D RRT for topology, Direct Transcription (SciPy SLSQP) for optimization. Reduced path length by 68.6% compared to raw RRT.",
+                    description: "RAW PATH PLANNING ALGORITHMS LIKE RRT PRODUCE JAGGED, INEFFICIENT TRAJECTORIES THAT ARE UNFLYABLE AT HIGH SPEEDS. THIS PROJECT FOCUSED ON GENERATING SMOOTH, DYNAMICALLY FEASIBLE FLIGHT PATHS THROUGH COMPLEX OBSTACLE COURSES.",
+                    details: "I developed a hierarchical motion planning framework for high-speed drone racing. First, I implemented a 3D RRT algorithm to find an initial collision-free topology through aerial hoops and obstacles. To ensure dynamic feasibility, I formulated a Direct Transcription trajectory optimization problem, solving it using the SLSQP algorithm via SciPy. This optimization enforced physics-based constraints (terminal velocity model), boundary conditions, and obstacle avoidance while minimizing control jerk and energy usage. The final pipeline reduced path length by 68.6% compared to raw RRT, generating smooth, flyable trajectories that strictly adhere to actuator limits.",
                     stack: ["PYTHON", "SCIPY", "GTSAM", "NUMPY"], image: "public/assets/Drone_img.png", github: "https://github.com/atharvanayak25", demo: "#"
                 },
                 {
                     id: 5, category: "project", title: "MULTI-SENSOR DEAD RECKONING", type: "SYSTEM: NAVIGATION",
-                    description: "ROBUST LOCALIZATION IN GPS-DENIED ENVIRONMENTS USING DEAD-RECKONING.",
-                    details: "Fusion framework for GPS/IMU at 100Hz. Implemented adaptive low-pass filtering and Zero-Velocity Updates (ZUPT). Reduced heading drift by 60%.",
+                    description: "RELIABLE NAVIGATION IN GPS-DENIED ENVIRONMENTS IS CRITICAL FOR AUTONOMOUS SYSTEMS, YET STANDARD SENSORS SUFFER FROM DRIFT OVER TIME. THIS PROJECT ENGINEERED A DEAD-RECKONING SOLUTION TO MAINTAIN HIGH-ACCURACY LOCALIZATION DURING SATELLITE SIGNAL OUTAGES.",
+                    details: "I developed a modular sensor fusion framework integrating custom drivers for GPS and IMU data at 100 Hz. By implementing an advanced dead reckoning pipeline with adaptive low-pass filtering and Zero-Velocity Updates (ZUPT), I achieved a 60% reduction in heading drift. The system demonstrated robust performance in field tests, maintaining 2-meter positioning accuracy over 50-meter GPS-denied segments with a 95% correlation to ground truth trajectories.",
                     stack: ["PYTHON", "C++", "ROS 2", "SENSOR FUSION"], image: "public/assets/DR_img.png", github: "https://github.com/atharvanayak25", demo: "#"
                 }
             ],
             experience: [
                 {
                     id: 101, category: "experience", title: "RESEARCH INTERN", company: "VIVEKANAND EDUCATION SOCIETY", period: "JUN 2023 - DEC 2023", location: "MUMBAI, INDIA",
-                    description: "ESC DEVELOPMENT ON FPGA ARCHITECTURE FOR DRONE PROPULSION.",
-                    details: "Implemented 8-bit, 25kHz PWM generator in Verilog. Coupled with MicroBlaze soft processor (4,500 LUTs). Validated with 12V BLDC motors.",
+                    description: "ELECTRONIC SPEED CONTROLLER (ESC) DEVELOPMENT ON FPGA ARCHITECTURE FOR HIGH-PRECISION AUTONOMOUS DRONE PROPULSION.",
+                    details: "Collaborating within a multidisciplinary research team, I engineered a custom FPGA-based motor control solution to replace off-the-shelf ESCs. My primary contribution was implementing an 8-bit, 25kHz PWM generator in Verilog and coupling it with real-time commutation logic on a MicroBlaze soft processor, achieving a resource footprint of just 4,500 LUTs. I worked closely with hardware engineers to integrate this logic with a custom PCB featuring three-phase MOSFET drivers, successfully validating stable operation of 12V BLDC motors under varying aerodynamic loads.",
                     stack: ["VERILOG", "FPGA", "PCB DESIGN", "XILINX"], image: "public/assets/vesit_logo.png"
                 },
                 {
                     id: 102, category: "experience", title: "FPGA RESEARCH INTERN", company: "TATA INSTITUTE OF FUNDAMENTAL RESEARCH", period: "SEP 2022 - APR 2023", location: "MUMBAI, INDIA",
-                    description: "HIGH-SPEED COMMUNICATION INTERFACE BETWEEN FPGA AND WIFI MODULE.",
-                    details: "Engineered 8-bit SPI protocol at 100 MHz. Achieved 35% throughput improvement. Developed embedded web server on WizFi360 for remote bitstream config.",
+                    description: "DEVELOPED A HIGH-SPEED COMMUNICATION INTERFACE BETWEEN SPARTAN-6 FPGA AND WIZFI360 MODULE FOR WIRELESS DATA TRANSFER.",
+                    details: "I engineered a custom 8-bit SPI communication protocol operating at 100 MHz to facilitate high-speed, reliable bidirectional data transfer between a WizFi360 Wi-Fi module and a Xilinx Spartan-6 FPGA. This implementation achieved a 35% throughput improvement with sub-2ms latency. Furthermore, I developed an embedded web server on the WizFi360 to enable remote bitstream configuration and real-time system monitoring over Wi-Fi, realizing a 98% connection stability rate and significantly reducing experimental setup time.",
                     stack: ["SPI", "EMBEDDED C", "WIFI", "IOT"], image: "public/assets/tifr_logo.png"
                 }
             ]
@@ -595,6 +595,7 @@
 </body>
 
 </html>
+
 
 
 
