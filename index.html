@@ -78,7 +78,7 @@
             <div class="hidden md:flex items-center gap-8 text-xs tracking-widest text-cyan-500">
                 <a href="#about" class="hover:text-white hover:drop-shadow-[0_0_10px_rgba(34,211,238,0.8)] transition-all">DATA</a>
                 <a href="#projects" class="hover:text-white hover:drop-shadow-[0_0_10px_rgba(34,211,238,0.8)] transition-all">PROJECTS</a>
-                <a href="#experience" class="hover:text-white hover:drop-shadow-[0_0_10px_rgba(34,211,238,0.8)] transition-all">LOGS</a>
+                <a href="#experience" class="hover:text-white hover:drop-shadow-[0_0_10px_rgba(34,211,238,0.8)] transition-all">WORK EXPERIENCE</a>
             </div>
             <div class="flex gap-3 text-cyan-600 border-l border-cyan-800 pl-4">
                 <i data-lucide="wifi" class="animate-pulse w-4 h-4"></i>
@@ -312,12 +312,12 @@
                     details: "I engineered an optimized Model Predictive Path Integral (o-MPPI) controller that leverages inverse dynamics modeling and output-space sampling to drastically reduce sampling complexity. By shifting the sampling distribution to the output space, I achieved a 12x reduction in computation time (from 98ms to 8ms), enabling high-frequency real-time control. The algorithm was rigorously validated in Gazebo simulations and physically deployed on a TurtleBot 3, demonstrating stable path tracking across 15+ diverse track configurations under varying dynamic conditions.",
                     stack: ["ROS 2", "PYTHON", "GAZEBO", "CONTROL THEORY"], image: "public/assets/MPPI_Img.png", github: "https://github.com/atharvanayak25", demo: "#"
                 },
-                {
+                /*{
                     id: 2, category: "project", title: "POINT-LIO SLAM", type: "SYSTEM: PERCEPTION",
                     description: "TRADITIONAL LIDAR SLAM METHODS STRUGGLE WITH HIGH-SPEED MOTION AND FEATURE-POOR ENVIRONMENTS, OFTEN LEADING TO DRIFT OR TRACKING FAILURE. THIS PROJECT AIMED TO DEPLOY A ROBUST STATE ESTIMATION SYSTEM CAPABLE OF HANDLING AGGRESSIVE MANEUVERS ON LEGGED ROBOTS.",
                     details: "I integrated the Point-LIO (LiDAR Inertial Odometry) framework onto a Boston Dynamics Spot robot to enable drift-free localization in challenging indoor environments. The system tightly couples high-frequency IMU data with LiDAR point clouds using an Extended Kalman Filter (EKF), allowing it to process 10,000+ points per frame at 10Hz. I benchmarked the system against LIO-SAM and FAST-LIO2, demonstrating superior performance in long corridor environments and maintaining sub-2cm accuracy during high-speed motion up to 75 rad/s.",
                     stack: ["LIDAR", "IMU", "EKF", "C++"], image: "public/assets/Point-LIO_img.jpg", github: "https://github.com/atharvanayak25", demo: "#"
-                },
+                }, */
                 {
                     id: 3, category: "project", title: "FIREARM DETECTION", type: "SYSTEM: VISION",
                     description: "ACTIVE SHOOTER INCIDENTS REQUIRE IMMEDIATE RESPONSE, YET HUMAN MONITORING OF SURVEILLANCE FEEDS IS PRONE TO FATIGUE AND DELAY. THIS PROJECT DEVELOPED AN AUTOMATED, REAL-TIME THREAT DETECTION SYSTEM TO REDUCE RESPONSE TIMES IN CRITICAL SECURITY SCENARIOS.",
@@ -335,7 +335,19 @@
                     description: "RELIABLE NAVIGATION IN GPS-DENIED ENVIRONMENTS IS CRITICAL FOR AUTONOMOUS SYSTEMS, YET STANDARD SENSORS SUFFER FROM DRIFT OVER TIME. THIS PROJECT ENGINEERED A DEAD-RECKONING SOLUTION TO MAINTAIN HIGH-ACCURACY LOCALIZATION DURING SATELLITE SIGNAL OUTAGES.",
                     details: "I developed a modular sensor fusion framework integrating custom drivers for GPS and IMU data at 100 Hz. By implementing an advanced dead reckoning pipeline with adaptive low-pass filtering and Zero-Velocity Updates (ZUPT), I achieved a 60% reduction in heading drift. The system demonstrated robust performance in field tests, maintaining 2-meter positioning accuracy over 50-meter GPS-denied segments with a 95% correlation to ground truth trajectories.",
                     stack: ["PYTHON", "C++", "ROS 2", "SENSOR FUSION"], image: "public/assets/DR_img.png", github: "https://github.com/atharvanayak25", demo: "#"
-                }
+                },
+                {
+                    id: 6, category: "project", title: "ODOMETRY-AIDED MONOCULAR SLAM", type: "SYSTEM: NAVIGATION",
+                    description: "Pure monocular SLAM suffers from scale ambiguity and cumulative drift, causing straight paths to warp into curved banana maps that are unusable for navigation. Without access to RGB-D depth streams or IMU data, standard visual SLAM algorithms cannot recover absolute metric scale or maintain geometric consistency in low-texture environments.",
+                    details: "Implemented a sensor fusion framework to resolve monocular scale ambiguity by integrating wheel encoder data with the ORB-SLAM3 pipeline3. To handle synchronization between 30Hz camera frames and 62Hz odometry, the system uses a temporal buffer with SLERP for rotation alignment. I developed a Scale Estimator using an Exponential Moving Average (EMA) filter (alpha=0.02) to recover absolute metric scale continuously. Additionally, I tuned the ORB extractor to use 4000 features (double the default) to prevent tracking loss6. The final system achieved a stable scale convergence of 1.04 and successful loop closure where the baseline failed.",
+                    stack: ["GAZEBO", "TURTLEBOT", "ROS 2", "OPENCV"], image: "public/assets/ORBSLAM3_img.jpg", github: "https://github.com/atharvanayak25", demo: "#"
+                },
+                {
+                    id: 7, category: "project", title: "ENERGY-AWARE MULTI-DRONE COVERAGE", type: "SYSTEM: PLANNING",
+                    description: "CONTINUOUS SURVEILLANCE MISSIONS USING DRONE SWARMS ARE LIMITED BY BATTERY LIFE, OFTEN REQUIRING THE ENTIRE FLEET TO GROUND FOR RECHARGING. STANDARD COVERAGE ALGORITHMS FAIL TO ACCOUNT FOR HETEROGENEOUS ENERGY STATES, LEADING TO COVERAGE GAPS WHEN AGENTS DEPLETE THEIR POWER SIMULTANEOUSLY.",
+                    details: "I developed a persistent coverage control system that integrates battery constraints with Voronoi-based partitioning. The core algorithm uses sigmoid weighting functions to dynamically adjust coverage responsibilities based on each drone's State of Charge (SoC). I implemented a linear discharge model (approx. 10-12 minute flight time) and a simulated charging cycle (3-5 minute recharge) to enable infinite mission duration. The system autonomously manages state transitions (Patrol > Return-to-Dock > Charging) and staggers docking times. In simulations with 3 agents, the framework maintained a mean coverage quality of 90.3% while ensuring no coverage blackouts occurred during battery swaps.",
+                    stack: ["PYTHON", "SCIPY", "ROS 2", "RVIZ"], image: "public/assets/EAC_img.jpg", github: "https://github.com/atharvanayak25", demo: "#"
+                },
             ],
             experience: [
                 {
@@ -595,7 +607,6 @@
 </body>
 
 </html>
-
 
 
 
