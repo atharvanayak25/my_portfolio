@@ -321,7 +321,7 @@
                 {
                     id: 3, category: "project", title: "FIREARM DETECTION", type: "SYSTEM: VISION",
                     description: "ACTIVE SHOOTER INCIDENTS REQUIRE IMMEDIATE RESPONSE, YET HUMAN MONITORING OF SURVEILLANCE FEEDS IS PRONE TO FATIGUE AND DELAY. THIS PROJECT DEVELOPED AN AUTOMATED, REAL-TIME THREAT DETECTION SYSTEM TO REDUCE RESPONSE TIMES IN CRITICAL SECURITY SCENARIOS.",
-                    details: "I engineered a high-performance real-time object detection system by fine-tuning the YOLOv8 deep neural network on a dataset of 2,376 training images, achieving 87% mAP@0.5 with high precision (100%) and recall (92%). The model was optimized for edge deployment using TensorRT on a Jetson Nano, enabling inference at 15+ FPS on live video feeds. To ensure rapid incident response, I architected an automated alerting pipeline that integrates with the Twilio API to instantly send SMS and voice notifications with intelligent frame capture (pre/post-detection context) to security personnel within seconds of a threat being identified.",
+                    details: "I engineered an end-to-end, real-time firearm detection and alerting pipeline by fine-tuning a YOLOv8n model on a custom dataset of 2,376 images, achieving an 87% mAP@0.5 with 1.00 Precision and 0.92 Recall at the optimal F1-score threshold. To transform this from a passive monitor into an active threat mitigation tool, I architected a Python-based inference system that integrates with the Twilio API to deliver redundant SMS and voice notifications. The system features a circular frame buffer to capture 11 frames of pre- and post-detection context for forensic analysis and utilizes a time-based cooldown mechanism to prevent alert fatigue, ensuring high-performance reliability on edge hardware.",
                     stack: ["YOLOV8", "TWILIO", "PYTORCH", "CV"], image: "public/assets/CV_img.png", github: "https://github.com/atharvanayak25", demo: "#"
                 },
                 {
@@ -607,6 +607,7 @@
 </body>
 
 </html>
+
 
 
 
