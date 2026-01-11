@@ -309,7 +309,7 @@
                 {
                     id: 1, category: "project", title: "OUTPUT SAMPLED MPPI", type: "SYSTEM: CONTROL",
                     description: "STANDARD MODEL PREDICTIVE CONTROL METHODS OFTEN SUFFER FROM HIGH COMPUTATIONAL COSTS, LIMITING REAL-TIME PERFORMANCE ON EMBEDDED ROBOTICS HARDWARE. THIS PROJECT ADDRESSED THE LATENCY BOTTLENECK IN AUTONOMOUS VEHICLE NAVIGATION.",
-                    details: "I engineered an optimized Model Predictive Path Integral (o-MPPI) controller that leverages inverse dynamics modeling and output-space sampling to drastically reduce sampling complexity. By shifting the sampling distribution to the output space, I achieved a 12x reduction in computation time (from 98ms to 8ms), enabling high-frequency real-time control. The algorithm was rigorously validated in Gazebo simulations and physically deployed on a TurtleBot 3, demonstrating stable path tracking across 15+ diverse track configurations under varying dynamic conditions.",
+                    details: "I engineered an optimized Output-Sampled Model Predictive Path Integral (o-MPPI) controller that shifts the sampling distribution from the control input space to the output state space, achieving a 12x reduction in computation time from 98ms to 8ms. By sampling endpoints within a $3 \times 3$ Region of Interest (ROI) around waypoints and utilizing cubic spline interpolation, the system ensures that the majority of generated rollouts are inherently safe and physically consistent with the robot's non-holonomic unicycle dynamics. These smooth trajectories are translated into executable linear and angular velocities via an analytical inverse model, allowing the robot to navigate complex racetracks with significantly fewer rollouts and a shorter prediction horizon compared to traditional MPPI. This derivative-free approach utilizes a Softmax formulation with a temperature parameter of 1.5 to aggregate the best-performing paths, effectively handling non-convex racetrack constraints and maintaining high-frequency, real-time control across diverse track configurations.",
                     stack: ["ROS 2", "PYTHON", "GAZEBO", "CONTROL THEORY"], image: "public/assets/MPPI_Img.png", github: "https://github.com/atharvanayak25", demo: "#"
                 },
                 /*{
@@ -607,6 +607,7 @@
 </body>
 
 </html>
+
 
 
 
