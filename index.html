@@ -301,7 +301,7 @@
         const DATA = {
             skills: [
                 { category: "LANGUAGES", items: ["PYTHON", "C++", "C", "MATLAB", "VERILOG", "CUDA", "BASH"] },
-                { category: "ROBOTICS & AI", items: ["ROS", "ROS 2", "GAZEBO", "ISAAC SIM", "OPENCV", "PYTORCH", "TENSORFLOW", "NUMPY", "SCIPY", "MOVEIT", "NAV2"] },
+                { category: "ROBOTICS & AI", items: ["ROS", "ROS 2", "GAZEBO", "ISAAC SIM", "OPENCV", "PYTORCH", "TENSORFLOW", "NUMPY", "SCIPY"] },
                 { category: "EMBEDDED & HARDWARE", items: ["RASPBERRY PI", "JETSON NANO", "FPGA (SPARTAN-6)", "VIVADO", "ARDUINO", "I2C / SPI / UART", "TCP/IP"] },
                 { category: "TOOLS & PLATFORMS", items: ["LINUX", "GIT", "DOCKER", "SOLIDWORKS", "RVIZ", "CMAKE", "SIMULINK"] }
             ],
@@ -321,7 +321,7 @@
                 {
                     id: 3, category: "project", title: "FIREARM DETECTION", type: "SYSTEM: VISION",
                     description: "ACTIVE SHOOTER INCIDENTS REQUIRE IMMEDIATE RESPONSE, YET HUMAN MONITORING OF SURVEILLANCE FEEDS IS PRONE TO FATIGUE AND DELAY. THIS PROJECT DEVELOPED AN AUTOMATED, REAL-TIME THREAT DETECTION SYSTEM TO REDUCE RESPONSE TIMES IN CRITICAL SECURITY SCENARIOS.",
-                    details: "I engineered an end-to-end, real-time firearm detection and alerting pipeline by fine-tuning a YOLOv8n model on a custom dataset of 2,376 images, achieving an 87% mAP@0.5 with 1.00 Precision and 0.92 Recall at the optimal F1-score threshold. To transform this from a passive monitor into an active threat mitigation tool, I architected a Python-based inference system that integrates with the Twilio API to deliver redundant SMS and voice notifications. The system features a circular frame buffer to capture 11 frames of pre- and post-detection context for forensic analysis and utilizes a time-based cooldown mechanism to prevent alert fatigue, ensuring high-performance reliability on edge hardware.",
+                    details: "I engineered a real-time firearm detection and alerting system by fine-tuning the YOLOv8n architecture on a custom dataset of 2,376 images, achieving a mean Average Precision (mAP@0.5) of 0.87 with a precision of 1.00 and recall of 0.92. To transform this from a passive monitor into an active threat mitigation tool, I architected a Python-based pipeline that integrates with the Twilio API to deliver redundant SMS and automated voice notifications within seconds of a high-confidence detection. The system is optimized for edge hardware and features an intelligent circular frame buffer that captures 11 frames of pre- and post-detection context for forensic review, while a built-in time-based cooldown mechanism prevents redundant alerts and alert fatigue.",
                     stack: ["YOLOV8", "TWILIO", "PYTORCH", "CV"], image: "public/assets/CV_img.png", github: "https://github.com/atharvanayak25", demo: "#"
                 },
                 {
@@ -607,6 +607,7 @@
 </body>
 
 </html>
+
 
 
 
