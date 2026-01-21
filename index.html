@@ -333,7 +333,7 @@
                 {
                     id: 5, category: "project", title: "MULTI-SENSOR DEAD RECKONING", type: "SYSTEM: NAVIGATION",
                     description: "RELIABLE NAVIGATION IN GPS-DENIED ENVIRONMENTS IS CRITICAL FOR AUTONOMOUS SYSTEMS, YET STANDARD SENSORS SUFFER FROM DRIFT OVER TIME. THIS PROJECT ENGINEERED A DEAD-RECKONING SOLUTION TO MAINTAIN HIGH-ACCURACY LOCALIZATION DURING SATELLITE SIGNAL OUTAGES.",
-                    details: "I developed a modular sensor fusion framework integrating custom drivers for GPS and IMU data at 100 Hz. By implementing an advanced dead reckoning pipeline with adaptive low-pass filtering and Zero-Velocity Updates (ZUPT), I achieved a 60% reduction in heading drift. The system demonstrated robust performance in field tests, maintaining 2-meter positioning accuracy over 50-meter GPS-denied segments with a 95% correlation to ground truth trajectories.",
+                    details: "I developed a modular sensor fusion framework integrating custom drivers for GPS and IMU data at 100 Hz. By implementing an advanced dead reckoning pipeline with adaptive low-pass filtering and Zero-Velocity Clamping, I achieved a 60% reduction in heading drift. The system demonstrated robust performance in field tests, maintaining 2-meter positioning accuracy over 50-meter GPS-denied segments with a 95% correlation to ground truth trajectories.",
                     stack: ["PYTHON", "C++", "ROS 2", "SENSOR FUSION"], image: "public/assets/DR_img.png", github: "https://github.com/atharvanayak25", demo: "#"
                 },
                 {
@@ -607,6 +607,7 @@
 </body>
 
 </html>
+
 
 
 
